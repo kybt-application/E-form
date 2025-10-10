@@ -39,7 +39,7 @@ document.getElementById('supplierName').textContent = supplier;
 // ดึงข้อมูลพนักงานจาก Backend
 async function loadEmployees() {
     try {
-        const res = await fetch(`https://kybt-systems.com/api/get_employees?supplier=${encodeURIComponent(supplier)}&token=${encodeURIComponent(token)}`);
+        const res = await fetch(`https://kybt-systems.com/Authentication/api/get_employees?supplier=${encodeURIComponent(supplier)}&token=${encodeURIComponent(token)}`);
         const employees = await res.json();
         const container = document.getElementById('employeeList');
         container.innerHTML = '';
@@ -81,7 +81,7 @@ document.getElementById('inviteForm').addEventListener('submit', async e => {
     formData.append('token', token);
 
     try {
-        const res = await fetch('https://kybt-systems.com/api/save_invite', {
+        const res = await fetch('https://kybt-systems.com/Authentication/api/save_invite', {
             method: 'POST',
             body: formData
         });
