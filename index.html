@@ -4,28 +4,61 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Form เชิญพนักงาน</title>
+<!-- Bootstrap 5 CSS -->
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+<!-- SweetAlert2 -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <style>
-body { font-family: Arial, sans-serif; margin: 0; padding: 0; background: #f4f4f4;}
-.container { max-width: 900px; margin: 20px auto; padding: 20px; background: #fff; border-radius: 10px; }
-h2 { text-align: center; margin-bottom: 20px; }
-.employee { margin-bottom: 15px; padding: 10px; border: 1px solid #ddd; border-radius: 8px; background: #fafafa; }
-.employee label { display: block; margin: 5px 0; }
-input[type="email"], select { width: 100%; padding: 8px; border-radius: 5px; border: 1px solid #ccc; box-sizing: border-box; }
-button { padding: 10px 20px; background: #007BFF; color: #fff; border: none; border-radius: 5px; cursor: pointer; }
-button:hover { background: #0056b3; }
-@media(max-width:600px){ .container{padding:10px;} }
+body {
+    font-family: 'Inter', sans-serif;
+    background: #f0f2f5;
+}
+.container {
+    max-width: 900px;
+    margin: 40px auto;
+    padding: 30px;
+    background: #fff;
+    border-radius: 16px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+}
+h2 {
+    text-align: center;
+    margin-bottom: 30px;
+    font-weight: 600;
+    color: #333;
+}
+.employee-card {
+    margin-bottom: 20px;
+    border-radius: 12px;
+    border: 1px solid #e0e0e0;
+    padding: 20px;
+    background: #fafafa;
+    transition: transform 0.2s ease;
+}
+.employee-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 15px rgba(0,0,0,0.05);
+}
+label {
+    font-weight: 500;
+}
+button {
+    border-radius: 8px;
+}
 </style>
 </head>
 <body>
 <div class="container">
-    <h2>Form เชิญพนักงาน</h2>
+    <h2>เชิญพนักงานเข้าร่วมงาน</h2>
     <form id="inviteForm">
-        <div>
-            <label>Supplier:</label>
-            <span id="supplierName"></span>
+        <div class="mb-3">
+            <label class="form-label">Supplier:</label>
+            <span id="supplierName" class="fw-bold"></span>
         </div>
         <div id="employeeList"></div>
-        <button type="submit">ส่งข้อมูล</button>
+        <div class="text-center mt-4">
+            <button type="submit" class="btn btn-primary btn-lg">ส่งข้อมูล</button>
+        </div>
     </form>
 </div>
 
@@ -45,40 +78,101 @@ async function loadEmployees() {
         container.innerHTML = '';
 
         if(employees.error){
-            container.innerHTML = `<p style="color:red;">${employees.error}</p>`;
+            container.innerHTML = `<p class="text-danger">${employees.error}</p>`;
             return;
         }
 
         employees.forEach(emp => {
             const div = document.createElement('div');
-            div.className = 'employee';
+            div.className = 'employee-card';
             div.innerHTML = `
-                <p><strong>${emp.employee_name}</strong></p>
-                <label>สถานะ:</label>
-                <select name="status_${emp.id}" required>
-                    <option value="">-- เลือก --</option>
-                    <option value="attend">เข้าร่วม</option>
-                    <option value="substitute">มีคนแทน</option>
-                    <option value="not">ไม่เข้าร่วม</option>
-                </select>
-                <label>อีเมล:</label>
-                <input type="email" name="email_${emp.id}" placeholder="กรอกอีเมล" required>
+                <p class="h5 fw-semibold">${emp.employee_name}</p>
+                <div class="mb-3">
+                    <label class="form-label">สถานะ:</label>
+                    <select name="status_${emp.id}" class="form-select" required>
+                        <option value="">-- เลือก --</option>
+                        <option value="OK">เข้าร่วม</option>
+                        <option value="substitute">มีคนแทน</option>
+                        <option value="not">ไม่เข้าร่วม</option>
+                    </select>
+                </div>
+                <div class="extraFields"></div>
             `;
             container.appendChild(div);
+
+            const select = div.querySelector('select');
+            const extraFields = div.querySelector('.extraFields');
+
+            select.addEventListener('change', () => {
+                const status = select.value;
+
+                if(status === 'OK'){ // เข้าร่วม
+                    extraFields.innerHTML = `
+                        <div class="mb-3">
+                            <label class="form-label">อีเมล:</label>
+                            <input type="email" name="email_${emp.id}" class="form-control" placeholder="กรอกอีเมล" required>
+                        </div>
+                    `;
+                } else if(status === 'substitute'){ // มีคนแทน
+                    extraFields.innerHTML = `
+                        <div class="mb-3">
+                            <label class="form-label">คำนำหน้า:</label>
+                            <input type="text" name="prefix_${emp.id}" class="form-control" placeholder="นาย/นาง/นางสาว" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">ชื่อ:</label>
+                            <input type="text" name="first_name_${emp.id}" class="form-control" placeholder="กรอกชื่อ" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">นามสกุล:</label>
+                            <input type="text" name="last_name_${emp.id}" class="form-control" placeholder="กรอกนามสกุล" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">อีเมล:</label>
+                            <input type="email" name="email_${emp.id}" class="form-control" placeholder="กรอกอีเมล" required>
+                        </div>
+                    `;
+                } else { // not เข้าร่วม
+                    extraFields.innerHTML = '';
+                }
+            });
         });
 
     } catch (error) {
         console.error(error);
-        alert('เกิดข้อผิดพลาดในการโหลดข้อมูลพนักงาน');
+        Swal.fire({
+            title: 'เกิดข้อผิดพลาด',
+            text: 'ไม่สามารถโหลดข้อมูลพนักงานได้ 😢',
+            icon: 'error',
+            confirmButtonText: 'ตกลง'
+        });
     }
 }
 
 // ส่งข้อมูลไป Backend
 document.getElementById('inviteForm').addEventListener('submit', async e => {
     e.preventDefault();
-    const formData = new FormData(e.target);
+
+    // ตรวจสอบ validation ก่อนส่ง
+    const form = e.target;
+    if(!form.checkValidity()){
+        form.reportValidity();
+        return;
+    }
+
+    const formData = new FormData();
     formData.append('supplier', supplier);
     formData.append('token', token);
+
+    document.querySelectorAll('.employee-card').forEach(card => {
+        const empId = card.querySelector('select').name.split('_')[1];
+        const status = card.querySelector('select').value;
+        formData.append(`status_${empId}`, status);
+
+        card.querySelectorAll('input').forEach(input => {
+            formData.append(input.name, input.value);
+        });
+    });
 
     try {
         const res = await fetch('https://kybt-systems.com/Authentication/api/save_invite', {
@@ -86,19 +180,37 @@ document.getElementById('inviteForm').addEventListener('submit', async e => {
             body: formData
         });
         const result = await res.json();
-        if(result.status === 'ok'){
-            alert('บันทึกข้อมูลเรียบร้อยแล้ว');
-            window.location.reload();
+
+        if(result.status === 'ok') {
+            Swal.fire({
+                title: 'สำเร็จ!',
+                text: 'บันทึกข้อมูลเรียบร้อยแล้ว 🎉',
+                icon: 'success',
+                confirmButtonText: 'ตกลง'
+            });
         } else {
-            alert('เกิดข้อผิดพลาด: ' + (result.message || 'ไม่ทราบสาเหตุ'));
+            Swal.fire({
+                title: 'เกิดข้อผิดพลาด',
+                text: result.message || 'ไม่ทราบสาเหตุ',
+                icon: 'error',
+                confirmButtonText: 'ตกลง'
+            });
         }
-    } catch (error) {
-        console.error(error);
-        alert('เกิดข้อผิดพลาดในการส่งข้อมูล');
+    } catch (err) {
+        console.error(err);
+        Swal.fire({
+            title: 'เกิดข้อผิดพลาด',
+            text: 'ไม่สามารถส่งข้อมูลได้ 😢',
+            icon: 'error',
+            confirmButtonText: 'ตกลง'
+        });
     }
 });
 
 loadEmployees();
 </script>
+
+<!-- Bootstrap 5 JS + Popper (optional) -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
