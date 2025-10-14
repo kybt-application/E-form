@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Form เชิญพนักงาน</title>
+<title>Form เชิญพนักงาน 3 ขั้นตอน</title>
 <!-- Bootstrap 5 CSS -->
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
 <!-- SweetAlert2 -->
@@ -21,9 +21,8 @@ body {
     border-radius: 16px;
     box-shadow: 0 4px 20px rgba(0,0,0,0.1);
 }
-h2 {
+h2, h3 {
     text-align: center;
-    margin-bottom: 30px;
     font-weight: 600;
     color: #333;
 }
@@ -33,33 +32,76 @@ h2 {
     border: 1px solid #e0e0e0;
     padding: 20px;
     background: #fafafa;
-    transition: transform 0.2s ease;
-}
-.employee-card:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 6px 15px rgba(0,0,0,0.05);
-}
-label {
-    font-weight: 500;
 }
 button {
     border-radius: 8px;
 }
+.logo {
+    display: block;
+    margin: 0 auto 20px;
+    width: 300px;
+}
+.agenda-card {
+    background: #fafafa;
+    border: 1px solid #e0e0e0;
+    border-radius: 12px;
+    padding: 20px;
+}
+.step {
+    display: none;
+}
+.step.active {
+    display: block;
+}
 </style>
 </head>
-<body>
+<body style="background-image: url('b1.jpg'); background-size: cover; background-position: unset;background-attachment:fixed">
 <div class="container">
-    <h2>เชิญพนักงานเข้าร่วมงาน</h2>
-    <form id="inviteForm">
-        <div class="mb-3">
-            <label class="form-label">Supplier:</label>
-            <span id="supplierName" class="fw-bold"></span>
+
+    <!-- STEP 1: บัตรเชิญ -->
+    <div id="step1" class="step active">
+        <img src="logo.jpg" alt="Logo" class="logo">
+        <h2>ขอเรียนเชิญเข้าร่วมงานประชุม Supplier Annual Meeting 2025</h2>
+        <div class="agenda-card mt-4">
+            <h5>รายละเอียดงาน</h5>
+            <p><strong>วันเวลา:</strong> 15 พฤศจิกายน 2025 เวลา 09.00 น.</p>
+            <p><strong>สถานที่:</strong> ห้องประชุมใหญ่ อาคารสำนักงานใหญ่</p>
+            <p><strong>หัวข้อหลัก:</strong> ร่วมพูดคุยและสรุปแผนงานประจำปี พร้อมรับฟังแนวทางการพัฒนาองค์กรในปี 2026</p>
         </div>
-        <div id="employeeList"></div>
         <div class="text-center mt-4">
-            <button type="submit" class="btn btn-primary btn-lg">ส่งข้อมูล</button>
+            <button id="nextToStep2" class="btn btn-primary  btn-lg">Next</button>
         </div>
-    </form>
+    </div>
+
+    <!-- STEP 2: แบบฟอร์มกรอกข้อมูล -->
+    <div id="step2" class="step">
+        <h2>เชิญพนักงานเข้าร่วมงาน</h2>
+        <form id="inviteForm">
+            <div class="mb-3">
+                <label class="form-label">Supplier:</label>
+                <span id="supplierName" class="fw-bold"></span>
+            </div>
+            <div id="employeeList"></div>
+            <div class="d-flex justify-content-between mt-4">
+                <button type="button" id="backToStep1" class="btn btn-secondary btn-lg">back</button>
+                <button type="submit" class="btn btn-primary btn-lg">Submit</button>
+            </div>
+        </form>
+    </div>
+
+    <!-- STEP 3: หน้าสำเร็จ -->
+    <div id="step3" class="step text-center">
+        <img src="logo.jpg" alt="Logo" class="logo">
+        <h2 class="text-success">ขอบคุณที่ตอบรับเข้าร่วมงาน 🎉</h2>
+        <p>ทีมงานได้รับข้อมูลของท่านเรียบร้อยแล้ว</p>
+        <div class="agenda-card mt-4 text-start">
+            <h5>รายละเอียดงาน</h5>
+            <p><strong>วันเวลา:</strong> 15 พฤศจิกายน 2025 เวลา 09.00 น.</p>
+            <p><strong>สถานที่:</strong> ห้องประชุมใหญ่ อาคารสำนักงานใหญ่</p>
+            <p><strong>หัวข้อหลัก:</strong> ร่วมพูดคุยและสรุปแผนงานประจำปี พร้อมรับฟังแนวทางการพัฒนาองค์กรในปี 2026</p>
+        </div>
+    </div>
+
 </div>
 
 <script>
@@ -69,7 +111,23 @@ const supplier = urlParams.get('supplier') || '';
 const token = urlParams.get('token') || '';
 document.getElementById('supplierName').textContent = supplier;
 
-// ดึงข้อมูลพนักงานจาก Backend
+// ฟังก์ชันเปลี่ยน step
+function showStep(step) {
+    document.querySelectorAll('.step').forEach(s => s.classList.remove('active'));
+    document.getElementById(step).classList.add('active');
+}
+
+// ไป Step 2
+document.getElementById('nextToStep2').addEventListener('click', () => {
+    showStep('step2');
+});
+
+// ย้อนกลับ Step 1
+document.getElementById('backToStep1').addEventListener('click', () => {
+    showStep('step1');
+});
+
+// โหลดข้อมูลพนักงาน
 async function loadEmployees() {
     try {
         const res = await fetch(`https://kybt-systems.com/Authentication/api/get_employees?supplier=${encodeURIComponent(supplier)}&token=${encodeURIComponent(token)}`);
@@ -105,7 +163,6 @@ async function loadEmployees() {
 
             select.addEventListener('change', () => {
                 const status = select.value;
-
                 if(status === 'OK'){ // เข้าร่วม
                     extraFields.innerHTML = `
                         <div class="mb-3">
@@ -132,12 +189,11 @@ async function loadEmployees() {
                             <input type="email" name="email_${emp.id}" class="form-control" placeholder="กรอกอีเมล" required>
                         </div>
                     `;
-                } else { // not เข้าร่วม
+                } else {
                     extraFields.innerHTML = '';
                 }
             });
         });
-
     } catch (error) {
         console.error(error);
         Swal.fire({
@@ -149,11 +205,9 @@ async function loadEmployees() {
     }
 }
 
-// ส่งข้อมูลไป Backend
+// ส่งข้อมูลไป backend
 document.getElementById('inviteForm').addEventListener('submit', async e => {
     e.preventDefault();
-
-    // ตรวจสอบ validation ก่อนส่ง
     const form = e.target;
     if(!form.checkValidity()){
         form.reportValidity();
@@ -168,10 +222,7 @@ document.getElementById('inviteForm').addEventListener('submit', async e => {
         const empId = card.querySelector('select').name.split('_')[1];
         const status = card.querySelector('select').value;
         formData.append(`status_${empId}`, status);
-
-        card.querySelectorAll('input').forEach(input => {
-            formData.append(input.name, input.value);
-        });
+        card.querySelectorAll('input').forEach(input => formData.append(input.name, input.value));
     });
 
     try {
@@ -182,12 +233,7 @@ document.getElementById('inviteForm').addEventListener('submit', async e => {
         const result = await res.json();
 
         if(result.status === 'ok') {
-            Swal.fire({
-                title: 'สำเร็จ!',
-                text: 'บันทึกข้อมูลเรียบร้อยแล้ว 🎉',
-                icon: 'success',
-                confirmButtonText: 'ตกลง'
-            });
+            showStep('step3');
         } else {
             Swal.fire({
                 title: 'เกิดข้อผิดพลาด',
@@ -210,7 +256,7 @@ document.getElementById('inviteForm').addEventListener('submit', async e => {
 loadEmployees();
 </script>
 
-<!-- Bootstrap 5 JS + Popper (optional) -->
+<!-- Bootstrap 5 JS -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
