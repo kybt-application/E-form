@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="th">
+<html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -59,24 +59,24 @@ button {
 <body style="background-image: url('b1.jpg'); background-size: cover; background-position: unset;background-attachment:fixed">
 <div class="container">
 
-    <!-- STEP 1: บัตรเชิญ -->
+    <!-- STEP 1: Invitation Card -->
     <div id="step1" class="step active">
         <img src="logo.jpg" alt="Logo" class="logo">
-        <h2>ขอเรียนเชิญเข้าร่วมงานประชุม Supplier Annual Meeting 2025</h2>
+        <h2>Invitation to Supplier Annual Meeting 2025</h2>
         <div class="agenda-card mt-4">
-            <h5>รายละเอียดงาน</h5>
-            <p><strong>วันเวลา:</strong> 15 พฤศจิกายน 2025 เวลา 09.00 น.</p>
-            <p><strong>สถานที่:</strong> ห้องประชุมใหญ่ อาคารสำนักงานใหญ่</p>
-            <p><strong>หัวข้อหลัก:</strong> ร่วมพูดคุยและสรุปแผนงานประจำปี พร้อมรับฟังแนวทางการพัฒนาองค์กรในปี 2026</p>
+            <h5>Event Details</h5>
+            <p><strong>Date & Time:</strong> 15 November 2025, 09:00 AM</p>
+            <p><strong>Location:</strong> Main Conference Room, Head Office</p>
+            <p><strong>Main Agenda:</strong> Discuss and summarize annual plans, and hear the organization's development direction for 2026</p>
         </div>
         <div class="text-center mt-4">
-            <button id="nextToStep2" class="btn btn-primary  btn-lg">Next</button>
+            <button id="nextToStep2" class="btn btn-primary btn-lg">Next</button>
         </div>
     </div>
 
-    <!-- STEP 2: แบบฟอร์มกรอกข้อมูล -->
+    <!-- STEP 2: Employee Form -->
     <div id="step2" class="step">
-        <h2>เชิญพนักงานเข้าร่วมงาน</h2>
+        <h2>Form</h2>
         <form id="inviteForm">
             <div class="mb-3">
                 <label class="form-label">Supplier:</label>
@@ -84,51 +84,45 @@ button {
             </div>
             <div id="employeeList"></div>
             <div class="d-flex justify-content-between mt-4">
-                <button type="button" id="backToStep1" class="btn btn-secondary btn-lg">back</button>
+                <button type="button" id="backToStep1" class="btn btn-secondary btn-lg">Back</button>
                 <button type="submit" class="btn btn-primary btn-lg">Submit</button>
             </div>
         </form>
     </div>
 
-    <!-- STEP 3: หน้าสำเร็จ -->
+    <!-- STEP 3: Success Page -->
     <div id="step3" class="step text-center">
         <img src="logo.jpg" alt="Logo" class="logo">
-        <h2 class="text-success">ขอบคุณที่ตอบรับเข้าร่วมงาน 🎉</h2>
-        <p>ทีมงานได้รับข้อมูลของท่านเรียบร้อยแล้ว</p>
+        <h2 class="text-success">Thank you for your RSVP 🎉</h2>
+        <p>Your information has been successfully submitted.</p>
         <div class="agenda-card mt-4 text-start">
-            <h5>รายละเอียดงาน</h5>
-            <p><strong>วันเวลา:</strong> 15 พฤศจิกายน 2025 เวลา 09.00 น.</p>
-            <p><strong>สถานที่:</strong> ห้องประชุมใหญ่ อาคารสำนักงานใหญ่</p>
-            <p><strong>หัวข้อหลัก:</strong> ร่วมพูดคุยและสรุปแผนงานประจำปี พร้อมรับฟังแนวทางการพัฒนาองค์กรในปี 2026</p>
+            <h5>Event Details</h5>
+            <p><strong>Date & Time:</strong> 15 November 2025, 09:00 AM</p>
+            <p><strong>Location:</strong> Main Conference Room, Head Office</p>
+            <p><strong>Main Agenda:</strong> Discuss and summarize annual plans, and hear the organization's development direction for 2026</p>
         </div>
     </div>
 
 </div>
 
 <script>
-// อ่าน supplier และ token จาก URL
+// Get supplier and token from URL
 const urlParams = new URLSearchParams(window.location.search);
 const supplier = urlParams.get('supplier') || '';
 const token = urlParams.get('token') || '';
-document.getElementById('supplierName').textContent = supplier;
 
-// ฟังก์ชันเปลี่ยน step
+
+// Function to switch steps
 function showStep(step) {
     document.querySelectorAll('.step').forEach(s => s.classList.remove('active'));
     document.getElementById(step).classList.add('active');
 }
 
-// ไป Step 2
-document.getElementById('nextToStep2').addEventListener('click', () => {
-    showStep('step2');
-});
+// Navigation buttons
+document.getElementById('nextToStep2').addEventListener('click', () => showStep('step2'));
+document.getElementById('backToStep1').addEventListener('click', () => showStep('step1'));
 
-// ย้อนกลับ Step 1
-document.getElementById('backToStep1').addEventListener('click', () => {
-    showStep('step1');
-});
-
-// โหลดข้อมูลพนักงาน
+// Load employees from API
 async function loadEmployees() {
     try {
         const res = await fetch(`https://kybt-systems.com/Authentication/api/get_employees?supplier=${encodeURIComponent(supplier)}&token=${encodeURIComponent(token)}`);
@@ -141,18 +135,22 @@ async function loadEmployees() {
             return;
         }
 
+        
+        document.getElementById('supplierName').textContent = employees[0]['supplier_name'];
+        
+
         employees.forEach(emp => {
             const div = document.createElement('div');
             div.className = 'employee-card';
             div.innerHTML = `
-                <p class="h5 fw-semibold">${emp.employee_name}</p>
+                <p class="h5 fw-semibold">${emp.employee_name} ${emp.employee_lastname}</p>
                 <div class="mb-3">
-                    <label class="form-label">สถานะ:</label>
+                   <label class="form-label">Participation Status</label>
                     <select name="status_${emp.id}" class="form-select" required>
-                        <option value="">-- เลือก --</option>
-                        <option value="OK">เข้าร่วม</option>
-                        <option value="substitute">มีคนแทน</option>
-                        <option value="not">ไม่เข้าร่วม</option>
+                        <option value="">-- Select --</option>
+                        <option value="1">Will Attend</option>
+                        <option value="2">Has Substitute</option>
+                        <option value="3">Will Not Attend</option>
                     </select>
                 </div>
                 <div class="extraFields"></div>
@@ -164,30 +162,47 @@ async function loadEmployees() {
 
             select.addEventListener('change', () => {
                 const status = select.value;
-                if(status === 'OK'){ // เข้าร่วม
+                if(status === '1'){ // Will Attend
                     extraFields.innerHTML = `
-                        <div class="mb-3">
-                            <label class="form-label">อีเมล:</label>
-                            <input type="email" name="email_${emp.id}" class="form-control" placeholder="กรอกอีเมล" required>
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Email:</label>
+                                <input type="email" name="email_${emp.id}" class="form-control"  required>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Position:</label>
+                                <input type="text" name="position_${emp.id}" class="form-control"  required>
+                            </div>
                         </div>
                     `;
-                } else if(status === 'substitute'){ // มีคนแทน
+                } else if(status === '2'){ // Has Substitute
                     extraFields.innerHTML = `
-                        <div class="mb-3">
-                            <label class="form-label">คำนำหน้า:</label>
-                            <input type="text" name="prefix_${emp.id}" class="form-control" placeholder="นาย/นาง/นางสาว" required>
+                        <div class="row">
+                                <div class="col-md-3 mb-3">
+                                <label class="form-label">Prefix</label>
+                                <select name="prefix_${emp.id}" class="form-select" required>
+                                    <option value="">-- Select --</option>
+                                    <option value="Mr.">Mr.</option>
+                                    <option value="Mrs.">Mrs.</option>
+                                    <option value="Ms.">Ms.</option>
+                                </select>
+                            </div>
+                            <div class="col-md-3 mb-3">
+                                <label class="form-label">First Name:</label>
+                                <input type="text" name="first_name_${emp.id}" class="form-control"  required>
+                            </div>
+                            <div class="col-md-3 mb-3">
+                                <label class="form-label">Last Name:</label>
+                                <input type="text" name="last_name_${emp.id}" class="form-control"  required>
+                            </div>
+                            <div class="col-md-3 mb-3">
+                                <label class="form-label">Email:</label>
+                                <input type="email" name="email_${emp.id}" class="form-control"  required>
+                            </div>
                         </div>
                         <div class="mb-3">
-                            <label class="form-label">ชื่อ:</label>
-                            <input type="text" name="first_name_${emp.id}" class="form-control" placeholder="กรอกชื่อ" required>
-                        </div>
-                        <div class="mb-3">
-                            <label class="form-label">นามสกุล:</label>
-                            <input type="text" name="last_name_${emp.id}" class="form-control" placeholder="กรอกนามสกุล" required>
-                        </div>
-                        <div class="mb-3">
-                            <label class="form-label">อีเมล:</label>
-                            <input type="email" name="email_${emp.id}" class="form-control" placeholder="กรอกอีเมล" required>
+                            <label class="form-label">Position:</label>
+                            <input type="text" name="position_${emp.id}" class="form-control"  required>
                         </div>
                     `;
                 } else {
@@ -198,26 +213,39 @@ async function loadEmployees() {
     } catch (error) {
         console.error(error);
         Swal.fire({
-            title: 'เกิดข้อผิดพลาด',
-            text: 'ไม่สามารถโหลดข้อมูลพนักงานได้ 😢',
+            title: 'Error',
+            text: 'Failed to load employee data 😢',
             icon: 'error',
-            confirmButtonText: 'ตกลง'
+            confirmButtonText: 'OK'
         });
     }
 }
 
-// ส่งข้อมูลไป backend
+// Submit form
 document.getElementById('inviteForm').addEventListener('submit', async e => {
     e.preventDefault();
     const form = e.target;
+
+    // ✅ Disable submit button to prevent multiple clicks
+    const submitBtn = form.querySelector('button[type="submit"]');
+    submitBtn.disabled = true;
+    submitBtn.textContent = 'Submitting...';
+
     if(!form.checkValidity()){
         form.reportValidity();
+        // ถ้า form ไม่ valid กลับ enable ปุ่ม
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'Submit';
         return;
     }
 
     const formData = new FormData();
+    const supplierNameNew = document.getElementById('supplierName').textContent;
     formData.append('supplier', supplier);
     formData.append('token', token);
+    formData.append('supplierName', supplierNameNew);
+
+    
 
     document.querySelectorAll('.employee-card').forEach(card => {
         const empId = card.querySelector('select').name.split('_')[1];
@@ -237,22 +265,29 @@ document.getElementById('inviteForm').addEventListener('submit', async e => {
             showStep('step3');
         } else {
             Swal.fire({
-                title: 'เกิดข้อผิดพลาด',
-                text: result.message || 'ไม่ทราบสาเหตุ',
+                title: 'Error',
+                text: result.message || 'Unknown error',
                 icon: 'error',
-                confirmButtonText: 'ตกลง'
+                confirmButtonText: 'OK'
             });
+            // ถ้าเกิด error กลับ enable ปุ่ม
+            submitBtn.disabled = false;
+            submitBtn.textContent = 'Submit';
         }
     } catch (err) {
         console.error(err);
         Swal.fire({
-            title: 'เกิดข้อผิดพลาด',
-            text: 'ไม่สามารถส่งข้อมูลได้ 😢',
+            title: 'Error',
+            text: 'Failed to submit data 😢',
             icon: 'error',
-            confirmButtonText: 'ตกลง'
+            confirmButtonText: 'OK'
         });
+        // ถ้าเกิด error กลับ enable ปุ่ม
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'Submit';
     }
 });
+
 
 loadEmployees();
 </script>
