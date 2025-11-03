@@ -61,8 +61,8 @@ button { border-radius: 8px; }
     <!-- STEP 1 -->
     <div id="step1" class="step active">
         <img src="logo.jpg" alt="Logo" class="logo">
-        <h2>Invitation to the 30th Anniversary Celebration of KYB (Thailand) Co., Ltd.</h2>
-         <div class="agenda-card mt-4">
+         <h2>Invitation to the 30th Anniversary Celebration of KYB (Thailand) Co., Ltd.</h2>
+          <div class="agenda-card mt-4">
             <h5>Event Details</h5><br>
             <p><strong>Date & Time:</strong> Tuesday 27 January, 2026 - 06:00 – 09:00 pm </p>
             <p><strong>Location:</strong> Siam Patumwan House 414, Phayathai Road, Wang Mai, Pathumwan, Bangkok 10330, Thailand</p>
@@ -74,7 +74,7 @@ button { border-radius: 8px; }
     </div>
         <!-- STEP 2 -->
     <div id="step2" class="step">
-        <h2>Invitation to the 30th Anniversary Celebration of KYB (Thailand) Co., Ltd. (form)</h2>
+        <h2>Invitation to the 30th Anniversary Celebration of KYB (Thailand) Co., Ltd. (Form)</h2>
         <form id="inviteForm">
             <div class="mb-3">
                 <label class="form-label">Supplier:</label>
@@ -189,9 +189,6 @@ function updateEmployeeOrder() {
 }
 
 
-// ===================
-// Add employee card - Main Representative (ID 1)
-// ===================
 function addEmployeeCard(name = '', isMain = false) {
     if (!isMain && currentCount >= totalEmployees) {
         Swal.fire({ icon: 'info', title: 'Limit reached', text: 'You cannot add more participants than allowed.' });
@@ -202,84 +199,44 @@ function addEmployeeCard(name = '', isMain = false) {
     const container = document.getElementById('employeeContainer');
     const div = document.createElement('div');
     div.className = 'employee-card';
-    
+
     if (isMain) {
-        const id = 1; // ตัวแทนหลักคือ ID 1 เสมอ
+        // ✅ เปลี่ยนให้กรอกได้เลย ไม่ต้องเลือกสถานะ
+        const id = 1;
         div.dataset.index = id;
         div.innerHTML = `
             <h5>Main Representative</h5>
-            <p class="text-muted">${name}</p>
-            <div class="mb-3">
-                <label class="form-label">Participation Status</label>
-                <select name="status_${id}" class="form-select" required data-field="status">
-                    <option value="">-- Select Status --</option>
-                    <option value="1">Will Attend</option>
-                    <option value="2">Substitute</option>
-                    <option value="3">Will Not Attend</option>
-                </select>
+            <div class="row">
+                <div class="col-md-3 mb-3">
+                    <label class="form-label">Prefix</label>
+                    <select name="prefix_${id}" class="form-select participant-field" data-field="prefix" required>
+                        <option value="">-- Select --</option>
+                        <option value="Mr.">Mr.</option>
+                        <option value="Mrs.">Mrs.</option>
+                        <option value="Ms.">Ms.</option>
+                    </select>
+                </div>
+                <div class="col-md-3 mb-3">
+                    <label class="form-label">First Name</label>
+                    <input type="text" name="first_name_${id}" class="form-control participant-field" data-field="first_name" required>
+                </div>
+                <div class="col-md-3 mb-3">
+                    <label class="form-label">Last Name</label>
+                    <input type="text" name="last_name_${id}" class="form-control participant-field" data-field="last_name" required>
+                </div>
+                <div class="col-md-3 mb-3">
+                    <label class="form-label">Email</label>
+                    <input type="email" name="email_${id}" class="form-control participant-field" data-field="email" required>
+                </div>
             </div>
-            <div class="extraFields"></div>
+            <div class="mb-3">
+                <label class="form-label">Position</label>
+                <input type="text" name="position_${id}" class="form-control participant-field" data-field="position" required>
+            </div>
+            <input type="hidden" name="status_${id}" value="1" class="participant-field" data-field="status">
         `;
-        const select = div.querySelector('select');
-        const extraFields = div.querySelector('.extraFields');
-
-        // 🌟 แก้ไขส่วนนี้: เพิ่มการเรียกใช้ updateEmployeeOrder()
-        select.addEventListener('change', () => {
-            const status = select.value;
-            if (status === '1') {
-                extraFields.innerHTML = `
-                    <div class="row">
-                        <div class="col-md-6 mb-3">
-                            <label class="form-label">Email</label>
-                            <input type="email" name="email_1" class="form-control participant-field" data-field="email" required>
-                        </div>
-                        <div class="col-md-6 mb-3">
-                            <label class="form-label">Position</label>
-                            <input type="text" name="position_1" class="form-control participant-field" data-field="position" required>
-                        </div>
-                    </div>
-                `;
-            } else if (status === '2') {
-                extraFields.innerHTML = `
-                    <div class="row">
-                        <div class="col-md-3 mb-3">
-                            <label class="form-label">Prefix</label>
-                            <select name="prefix_1" class="form-select participant-field" data-field="prefix" required>
-                                <option value="">-- Select --</option>
-                                <option value="Mr.">Mr.</option>
-                                <option value="Mrs.">Mrs.</option>
-                                <option value="Ms.">Ms.</option>
-                            </select>
-                        </div>
-                        <div class="col-md-3 mb-3">
-                            <label class="form-label">First Name</label>
-                            <input type="text" name="first_name_1" class="form-control participant-field" data-field="first_name" required>
-                        </div>
-                        <div class="col-md-3 mb-3">
-                            <label class="form-label">Last Name</label>
-                            <input type="text" name="last_name_1" class="form-control participant-field" data-field="last_name" required>
-                        </div>
-                        <div class="col-md-3 mb-3">
-                            <label class="form-label">Email</label>
-                            <input type="email" name="email_1" class="form-control participant-field" data-field="email" required>
-                        </div>
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label">Position</label>
-                        <input type="text" name="position_1" class="form-control participant-field" data-field="position" required>
-                    </div>
-                `;
-            } else {
-                extraFields.innerHTML = '';
-            }
-
-            // 🚨 การแก้ไขสำคัญ: บังคับเรียก updateEmployeeOrder ทันทีหลังเปลี่ยน DOM
-            // เพื่อให้แน่ใจว่า name attribute ถูกเซ็ตไว้อย่างถูกต้อง
-            updateEmployeeOrder(); 
-        });
-        
     } else {
-        // ... โค้ดสำหรับ Participant (ID > 1) เหมือนเดิม
+        // ✅ เหมือนของเดิม
         div.innerHTML = `
             <button type="button" class="btn btn-danger btn-sm btn-remove">🗑 Remove</button>
             <h5>Participant #</h5>
@@ -321,9 +278,10 @@ function addEmployeeCard(name = '', isMain = false) {
     }
 
     container.appendChild(div);
-    updateEmployeeOrder(); // 💡 เรียกเมื่อสร้าง Card ครั้งแรก
+    updateEmployeeOrder();
     updateCountInfo();
 }
+
 
 
 // ===================
