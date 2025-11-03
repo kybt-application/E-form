@@ -210,7 +210,7 @@ async function loadEmployees() {
                     `;
                 } else {
                     extraFields.innerHTML = `
-                      <input type="hidden" name="prefix_${emp.id}" class="form-control"  value="${emp.prefix}">
+                      <input type="hidden" name="prefix_${emp.id}" class="form-control"  value="${emp.employe_title}">
                                 <input type="hidden" name="first_name_${emp.id}" class="form-control"  value="${emp.employee_name}">
                                 <input type="hidden" name="last_name_${emp.id}" class="form-control"  value="${emp.employee_lastname}">
                     `;
