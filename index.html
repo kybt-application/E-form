@@ -111,7 +111,6 @@ const urlParams = new URLSearchParams(window.location.search);
 const supplier = urlParams.get('supplier') || '';
 const token = urlParams.get('token') || '';
 
-
 // Function to switch steps
 function showStep(step) {
     document.querySelectorAll('.step').forEach(s => s.classList.remove('active'));
@@ -135,9 +134,7 @@ async function loadEmployees() {
             return;
         }
 
-        
         document.getElementById('supplierName').textContent = employees[0]['supplier_name'];
-        
 
         employees.forEach(emp => {
             const div = document.createElement('div');
@@ -167,24 +164,24 @@ async function loadEmployees() {
                         <div class="row">
                             <div class="col-md-6 mb-3">
                                 <label class="form-label">Email:</label>
-                                <input type="email" name="email_${emp.id}" class="form-control"  required>
-                                <input type="hidden" name="prefix_${emp.id}" class="form-control"  value="${emp.employee_title}">
-                                <input type="hidden" name="first_name_${emp.id}" class="form-control"  value="${emp.employee_name}">
-                                <input type="hidden" name="last_name_${emp.id}" class="form-control"  value="${emp.employee_lastname}">
+                                <input type="email" name="email_${emp.id}" class="form-control" required>
+                                <input type="hidden" name="prefix_${emp.id}" value="${emp.employee_title}">
+                                <input type="hidden" name="first_name_${emp.id}" value="${emp.employee_name}">
+                                <input type="hidden" name="last_name_${emp.id}" value="${emp.employee_lastname}">
                             </div>
                             <div class="col-md-6 mb-3">
                                 <label class="form-label">Position:</label>
-                                <input type="text" name="position_${emp.id}" class="form-control"  required>
+                                <input type="text" name="position_${emp.id}" class="form-control" required>
                             </div>
                         </div>
                     `;
                 } else if(status === '2'){ // Has Substitute
                     extraFields.innerHTML = `
                         <div class="row">
-                                <div class="col-md-3 mb-3">
+                            <div class="col-md-3 mb-3">
                                 <label class="form-label">Prefix</label>
-                                <select name="prefix_${emp.id}" class="form-select" required>
-                                    <option value="">-- Select --</option>
+                                <select name="prefix_${emp.id}" class="form-select participant-field" required>
+                                    <option value="${emp.employee_title}" selected>${emp.employee_title}</option>
                                     <option value="Mr.">Mr.</option>
                                     <option value="Mrs.">Mrs.</option>
                                     <option value="Ms.">Ms.</option>
@@ -192,27 +189,27 @@ async function loadEmployees() {
                             </div>
                             <div class="col-md-3 mb-3">
                                 <label class="form-label">First Name:</label>
-                                <input type="text" name="first_name_${emp.id}" class="form-control"  required>
+                                <input type="text" name="first_name_${emp.id}" class="form-control" required>
                             </div>
                             <div class="col-md-3 mb-3">
                                 <label class="form-label">Last Name:</label>
-                                <input type="text" name="last_name_${emp.id}" class="form-control"  required>
+                                <input type="text" name="last_name_${emp.id}" class="form-control" required>
                             </div>
                             <div class="col-md-3 mb-3">
                                 <label class="form-label">Email:</label>
-                                <input type="email" name="email_${emp.id}" class="form-control"  required>
+                                <input type="email" name="email_${emp.id}" class="form-control" required>
                             </div>
                         </div>
                         <div class="mb-3">
                             <label class="form-label">Position:</label>
-                            <input type="text" name="position_${emp.id}" class="form-control"  required>
+                            <input type="text" name="position_${emp.id}" class="form-control" required>
                         </div>
                     `;
-                } else {
+                } else { // Will Not Attend
                     extraFields.innerHTML = `
-                      <input type="hidden" name="prefix_${emp.id}" class="form-control"  value="${emp.employe_title}">
-                                <input type="hidden" name="first_name_${emp.id}" class="form-control"  value="${emp.employee_name}">
-                                <input type="hidden" name="last_name_${emp.id}" class="form-control"  value="${emp.employee_lastname}">
+                        <input type="hidden" name="prefix_${emp.id}" value="${emp.employee_title}">
+                        <input type="hidden" name="first_name_${emp.id}" value="${emp.employee_name}">
+                        <input type="hidden" name="last_name_${emp.id}" value="${emp.employee_lastname}">
                     `;
                 }
             });
@@ -232,15 +229,12 @@ async function loadEmployees() {
 document.getElementById('inviteForm').addEventListener('submit', async e => {
     e.preventDefault();
     const form = e.target;
-
-    // ✅ Disable submit button to prevent multiple clicks
     const submitBtn = form.querySelector('button[type="submit"]');
     submitBtn.disabled = true;
     submitBtn.textContent = 'Submitting...';
 
     if(!form.checkValidity()){
         form.reportValidity();
-        // ถ้า form ไม่ valid กลับ enable ปุ่ม
         submitBtn.disabled = false;
         submitBtn.textContent = 'Submit';
         return;
@@ -252,13 +246,15 @@ document.getElementById('inviteForm').addEventListener('submit', async e => {
     formData.append('token', token);
     formData.append('supplierName', supplierNameNew);
 
-    
-
     document.querySelectorAll('.employee-card').forEach(card => {
         const empId = card.querySelector('select').name.split('_')[1];
         const status = card.querySelector('select').value;
         formData.append(`status_${empId}`, status);
-        card.querySelectorAll('input').forEach(input => formData.append(input.name, input.value));
+
+        // Append all input and select fields inside extraFields
+        card.querySelectorAll('input, select').forEach(el => {
+            formData.append(el.name, el.value);
+        });
     });
 
     try {
@@ -277,7 +273,6 @@ document.getElementById('inviteForm').addEventListener('submit', async e => {
                 icon: 'error',
                 confirmButtonText: 'OK'
             });
-            // ถ้าเกิด error กลับ enable ปุ่ม
             submitBtn.disabled = false;
             submitBtn.textContent = 'Submit';
         }
@@ -289,15 +284,14 @@ document.getElementById('inviteForm').addEventListener('submit', async e => {
             icon: 'error',
             confirmButtonText: 'OK'
         });
-        // ถ้าเกิด error กลับ enable ปุ่ม
         submitBtn.disabled = false;
         submitBtn.textContent = 'Submit';
     }
 });
 
-
 loadEmployees();
 </script>
+
 
 <!-- Bootstrap 5 JS -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
