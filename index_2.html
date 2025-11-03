@@ -284,7 +284,11 @@ function addEmployeeCard(name = '', isMain = false) {
                     </div>
                 `;
             } else {
-                extraFields.innerHTML = '';
+                extraFields.innerHTML = `
+                      <input type="hidden" name="prefix_1" class="form-control"  value="${valuePrefixMain}">
+                                <input type="hidden" name="first_name_1" class="form-control"  value="${valueFirstnameMain}">
+                                <input type="hidden" name="last_name_1" class="form-control"  value="${valueLastnameMain}">
+                    `;
             }
 
             // 🚨 การแก้ไขสำคัญ: บังคับเรียก updateEmployeeOrder ทันทีหลังเปลี่ยน DOM
