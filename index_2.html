@@ -110,6 +110,9 @@ button { border-radius: 8px; }
     </div>
 
 </div>
+<input type="hidden" id="prefix_main_1" >
+<input type="hidden" id="first_name_main_1" >
+<input type="hidden" id="first_lastname_main_1" >
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
@@ -146,6 +149,10 @@ async function loadSupplierInfo() {
         }
         //  console.log(data);
          document.getElementById('supplierName').textContent = data[0]['supplier_name'];
+
+         document.getElementById('prefix_main_1').value = data[0]['employee_title'];
+         document.getElementById('first_name_main_1').value = data[0]['employee_name'];
+         document.getElementById('first_lastname_main_1').value = data[0]['employee_lastname'];
 
         totalEmployees = data.length || 1; 
         if (data.length > 0) addEmployeeCard(data[0].employee_name + " " + data[0].employee_lastname, true); 
@@ -202,6 +209,10 @@ function addEmployeeCard(name = '', isMain = false) {
     const container = document.getElementById('employeeContainer');
     const div = document.createElement('div');
     div.className = 'employee-card';
+
+    var valuePrefixMain = document.getElementById('prefix_main_1').value;
+    var valueFirstnameMain = document.getElementById('first_name_main_1').value;
+    var valueLastnameMain = document.getElementById('first_lastname_main_1').value;
     
     if (isMain) {
         const id = 1; // ตัวแทนหลักคือ ID 1 เสมอ
@@ -232,6 +243,9 @@ function addEmployeeCard(name = '', isMain = false) {
                         <div class="col-md-6 mb-3">
                             <label class="form-label">Email</label>
                             <input type="email" name="email_1" class="form-control participant-field" data-field="email" required>
+                            <input type="hidden" name="prefix_1" class="form-control"  value="${valuePrefixMain}">
+                            <input type="hidden" name="first_name_1" class="form-control"  value="${valueFirstnameMain}">
+                            <input type="hidden" name="last_name_1" class="form-control"  value="${valueLastnameMain}">
                         </div>
                         <div class="col-md-6 mb-3">
                             <label class="form-label">Position</label>
