@@ -64,7 +64,7 @@ button { border-radius: 8px; }
         <h2>Invitation to the 30th Anniversary Celebration of KYB (Thailand) Co., Ltd.</h2>
          <div class="agenda-card mt-4">
             <h5>Event Details</h5><br>
-            <p><strong>Date & Time:</strong> Tuesday 27 January, 2026 - 06:00 – 09:00 pm </p>
+            <p><strong>Date & Time:</strong> Tuesday 27 January, 2026 <br> 06:00 – 09:00 pm </p>
             <p><strong>Location:</strong> Siam Patumwan House 414, Phayathai Road, Wang Mai, Pathumwan, Bangkok 10330, Thailand</p>
             <!-- <p><strong>Main Agenda:</strong> Discuss and summarize annual plans, and hear the organization's development direction for 2026</p> -->
         </div>
@@ -113,6 +113,7 @@ button { border-radius: 8px; }
 <input type="hidden" id="prefix_main_1" >
 <input type="hidden" id="first_name_main_1" >
 <input type="hidden" id="first_lastname_main_1" >
+<input type="hidden" id="position_main_1" >
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
@@ -153,6 +154,7 @@ async function loadSupplierInfo() {
          document.getElementById('prefix_main_1').value = data[0]['employee_title'];
          document.getElementById('first_name_main_1').value = data[0]['employee_name'];
          document.getElementById('first_lastname_main_1').value = data[0]['employee_lastname'];
+         document.getElementById('position_main_1').value = data[0]['employee_position'];
 
         totalEmployees = data.length || 1; 
         if (data.length > 0) addEmployeeCard(data[0].employee_name + " " + data[0].employee_lastname, true); 
@@ -213,6 +215,7 @@ function addEmployeeCard(name = '', isMain = false) {
     var valuePrefixMain = document.getElementById('prefix_main_1').value;
     var valueFirstnameMain = document.getElementById('first_name_main_1').value;
     var valueLastnameMain = document.getElementById('first_lastname_main_1').value;
+    var valuePositionMain = document.getElementById('position_main_1').value;
     
     if (isMain) {
         const id = 1; // ตัวแทนหลักคือ ID 1 เสมอ
@@ -249,7 +252,7 @@ function addEmployeeCard(name = '', isMain = false) {
                         </div>
                         <div class="col-md-6 mb-3">
                             <label class="form-label">Position</label>
-                            <input type="text" name="position_1" class="form-control participant-field" data-field="position" required>
+                            <input type="text" name="position_1" class="form-control participant-field" data-field="position" value="${valuePositionMain}" required>
                         </div>
                     </div>
                 `;

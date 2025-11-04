@@ -65,7 +65,7 @@ button {
         <h2>Invitation to the 30th Anniversary Celebration of KYB (Thailand) Co., Ltd.</h2>
         <div class="agenda-card mt-4">
             <h5>Event Details</h5><br>
-            <p><strong>Date & Time:</strong> Tuesday 27 January, 2026 - 06:00 – 09:00 pm </p>
+            <p><strong>Date & Time:</strong> Tuesday 27 January, 2026 <br> 06:00 – 09:00 pm </p>
             <p><strong>Location:</strong> Siam Patumwan House 414, Phayathai Road, Wang Mai, Pathumwan, Bangkok 10330, Thailand</p>
             <!-- <p><strong>Main Agenda:</strong> Discuss and summarize annual plans, and hear the organization's development direction for 2026</p> -->
         </div>
@@ -171,7 +171,7 @@ async function loadEmployees() {
                             </div>
                             <div class="col-md-6 mb-3">
                                 <label class="form-label">Position:</label>
-                                <input type="text" name="position_${emp.id}" class="form-control" required>
+                                <input type="text" name="position_${emp.id}" class="form-control" value="${emp.employee_position}" required>
                             </div>
                         </div>
                     `;
