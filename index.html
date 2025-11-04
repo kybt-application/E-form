@@ -140,7 +140,7 @@ async function loadEmployees() {
             const div = document.createElement('div');
             div.className = 'employee-card';
             div.innerHTML = `
-                <p class="h5 fw-semibold">${emp.employee_name} ${emp.employee_lastname}</p>
+                <p class="h5 fw-semibold">${emp.employee_title} ${emp.employee_name} ${emp.employee_lastname}</p>
                 <div class="mb-3">
                    <label class="form-label">Participation Status</label>
                     <select name="status_${emp.id}" class="form-select" required>
@@ -181,7 +181,7 @@ async function loadEmployees() {
                             <div class="col-md-3 mb-3">
                                 <label class="form-label">Prefix</label>
                                 <select name="prefix_${emp.id}" class="form-select participant-field" required>
-                                    <option value="${emp.employee_title}" selected>${emp.employee_title}</option>
+                                
                                     <option value="Mr.">Mr.</option>
                                     <option value="Mrs.">Mrs.</option>
                                     <option value="Ms.">Ms.</option>
