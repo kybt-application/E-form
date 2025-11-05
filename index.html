@@ -79,7 +79,7 @@ button {
         <h2>Invitation to the 30th Anniversary Celebration of KYB (Thailand) Co., Ltd. (Form)</h2>
         <form id="inviteForm">
             <div class="mb-3">
-                <label class="form-label">Supplier:</label>
+                <label class="form-label" id="supplier_new">Supplier:</label>
                 <span id="supplierName" class="fw-bold"></span>
             </div>
             <div id="employeeList"></div>
@@ -135,6 +135,10 @@ async function loadEmployees() {
         }
 
         document.getElementById('supplierName').textContent = employees[0]['supplier_name'];
+
+        document.getElementById("supplier_new").textContent = employees[0]['employee_type'] + " :";
+
+        // document.getElementById("supplier_new").textContent = employees[0]['employee_type'];
 
         employees.forEach(emp => {
             const div = document.createElement('div');

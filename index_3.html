@@ -77,7 +77,7 @@ button { border-radius: 8px; }
         <h2>Invitation to the 30th Anniversary Celebration of KYB (Thailand) Co., Ltd. (Form)</h2>
         <form id="inviteForm">
             <div class="mb-3">
-                <label class="form-label">Supplier:</label>
+                <label class="form-label" id="supplier_new"></label>
                 <span id="supplierName" class="fw-bold"></span>
             </div>
 
@@ -146,6 +146,8 @@ async function loadSupplierInfo() {
         }
         //  console.log(data);
          document.getElementById('supplierName').textContent = data[0]['supplier_name'];
+
+         document.getElementById("supplier_new").textContent = data[0]['employee_type'] + " :";
 
         totalEmployees = data.length || 1; 
         if (data.length > 0) addEmployeeCard(data[0].employee_name + " " + data[0].employee_lastname, true); 
